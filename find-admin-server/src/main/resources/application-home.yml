@@ -14,6 +14,35 @@ spring:
             # 这里要适配下健康检查的endpoint
             context-path: '/actuator'
 
+#集成邮箱报警功能，服务上下线通知
+  mail:
+    # 发件使用smtp协议
+    protocol: smtp
+    host: smtp.163.com
+    username: 你自己的邮箱
+    password: 你自己的密码
+    port: 465
+    default-encoding: UTF-8
+    # 配置SSL 加密工厂
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+          # 超时时间（可选）
+          connectiontimeout: 10000
+          timeout: 8000
+          writetimeout: 8000
+        #true表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
+  boot:
+    admin:
+      notify:
+        mail:
+          from: 发件人邮箱
+          to: 收件人邮箱
+          cc: cc人邮箱
 
 #暴露所有监控监控端点
 management:
