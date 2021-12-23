@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion><!--modelVersion：指定了当前POM模型的版本，对于Maven2及Maven 3来说，它只能是4.0.0-->
+
+    <name>find-admin-client</name><!--模块名称-->
+    <description>被监控的微服务</description>
+    <version>0.0.1-SNAPSHOT</version><!--打包时，jar的版本-->
+
+    <groupId>com.jiudd.find</groupId><!--开发此项目的公司-->
+    <artifactId>find-admin-client</artifactId><!--项目名称-->
+
+    <!--指明打包方式为jar-->
+    <packaging>jar</packaging>
+
+    <!-- 子模块的parent要使用自己的父模块-->
+    <parent>
+        <groupId>com.jiudd.find</groupId>
+        <artifactId>jiudd_springboot_admin</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <!-- properties可删掉，会继承父模块的-->
+    <!--<properties>
+        <java.version>1.8</java.version>
+    </properties>-->
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+        <!--引入此jar后，微服务启动后，会自动注册到Nacos-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

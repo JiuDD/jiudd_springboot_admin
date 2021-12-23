@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active: @env.active@
+#要想使此 占位符 placeHolder生效，必需在父工程的pom的<build>里配置<resources>

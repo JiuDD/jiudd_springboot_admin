@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion><!--modelVersion：指定了当前POM模型的版本，对于Maven2及Maven 3来说，它只能是4.0.0-->
+
+    <name>jiudd_springboot_admin</name>
+    <description>Spring Boot Admin 监控中心</description>
+    <version>0.0.1-SNAPSHOT</version><!--打包时，jar的版本-->
+
+    <groupId>com.jiudd.find</groupId><!--开发此项目的公司-->
+    <artifactId>jiudd_springboot_admin</artifactId><!--项目名称-->
+
+    <!--父模块打包类型必须为pom，因为它里面没有任何的代码内容，是一个空的父项目-->
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <!--配置子模块-->
+    <modules>
+        <module>find-admin-server</module><!--SpringBoot Admin的 服务器-->
+        <module>find-admin-client</module><!--被监控的微服务-->
+    </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!--SpringCloud的版本号以英国伦敦的地铁站命名，SpringCloud与Springboot的匹配关系，
+        参考SpringCloud的官网（首页搜索关键词：Release Train）：https://spring.io/projects/spring-cloud-->
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud-alibaba-dependencies.version>2.2.5.RELEASE</spring-cloud-alibaba-dependencies.version>
+
+        <mybatis.version>2.1.4</mybatis.version>
+        <druid.version>1.1.10</druid.version>
+        <!--以spring-boot-starter开头的jar，springboot会自动适配合适的版本，并不需要我们来配置-->
+        <!--<email.version>2.2.6.RELEASE</email.version>
+        <thyme.version>2.4.5</thyme.version>-->
+        <fastjson.version>1.2.12</fastjson.version>
+    </properties>
+
+
+    <!--父项目的依赖管理，必须加上这个标签：dependencyManagement -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!--Spring cloud的依赖，这是个父项目配置，只要配置了这个依赖，那么子项目如spring-cloud-starter-openfeign、eureka等
+            可以直接在其它子模块引入，甚至不需要在当前父pom文件里配置，并且，子模块的版本也不用自定义，SpringCloud会自动适配。
+            例如，find-api/pom.xml里为了使用feign，就直接引入spring-cloud-starter-openfeign了，而这个配置，并没有再父工程的pom
+            文件里显式配置-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--由于spring cloud alibaba还未纳入spring cloud的主版本管理中，所以需要自己指定spring cloud alibaba的版本-->
+            <!--只要使用Spring Cloud Alibaba 的组件，都需要添加此依赖，并指定大版本-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 删除spring-boot-starter和spring-boot-starter-test，
+           因为parent中继承的祖先中已经有了，并且一般dependencyManagement管理的依赖都要写版本号 -->
+            <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter</artifactId>-->
+            <!--</dependency>-->
+
+            <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-test</artifactId>-->
+            <!--<scope>test</scope>-->
+            <!--</dependency>-->
+
+            <!--数据库-->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!--邮件     虽然子模块会用到这个jar，但是父模块并不需要来统一管理版本，因为：
+            以spring-boot-starter开头的jar，springboot会自动适配合适的版本，并不需要我们来配置-->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-mail</artifactId>
+                <version>${email.version}</version>
+            </dependency>-->
+            <!--邮件使用Thymeleaf 模板    虽然子模块会用到这个jar，但是父模块并不需要来统一管理版本，因为：
+            以spring-boot-starter开头的jar，springboot会自动适配合适的版本，并不需要我们来配置-->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+                <version>${thyme.version}</version>
+            </dependency>-->
+
+            <!-- fastjson -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <!--自动get set方法，及日志（内含日志注解：@Slf4j）-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.4</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--PageHelper分页插件-->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>5.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>1.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
+                <version>1.2.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>0.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>3.4.0</version>
+            </dependency>
+
+            <!--微服务里swagger的依赖-->
+            <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/knife4j-micro-spring-boot-starter -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-micro-spring-boot-starter</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <!--网关里swagger的依赖-->
+            <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/knife4j-spring-boot-starter -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+
+            <!--SpringData工具包-->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>2.3.0.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>1.4.0</version>
+            </dependency>
+
+            <!--一个工具包，包含日期等等工具类-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.4.0</version>
+            </dependency>
+
+            <!--阿里巴巴 easyexcel 工具类-->
+            <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>2.2.11</version>
+            </dependency>
+
+            <!-- springboot项目性能分析工具，通过追踪方法调用链路以及对应的运行时长快速定位性能瓶颈 -->
+            <dependency>
+                <groupId>cn.langpy</groupId>
+                <artifactId>ko-time</artifactId>
+                <version>2.0.4</version>
+            </dependency>
+
+            <!--ELK组件：LogStash，用于过滤、存储日志到ES-->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>6.6</version>
+            </dependency>
+
+            <!--spring-boot-admin 的 服务端-->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <!--spring-boot-admin 的 客户端-->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
+
+
+
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!--该插件作用是打一个可运行的包，必须要写在需要打 可执行 jar包 的项目里，如api所在的模块。这里的父模块不需要打包运行，所以不配置该插件。-->
+    <!--<build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>-->
+
+    <build>
+        <!--自定义打成的jar包名字。默认格式为：artifactId-version.jar-->
+        <!--本项目自定义了jar包名字，格式为：artifactId-version-环境.jar-->
+        <!-- 例：find-common-0.0.1-SNAPSHOT-comp.jar -->
+        <finalName>${project.artifactId}-${project.version}-${env.active}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <!--把pom里配置的值，赋值到yml等类型的配置文件里面。如：${mysql.user}-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yaml</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.factories</include>
+                    <include>**/*.json</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <!--  <delimiters>
+                          <delimit>$</delimit>
+                      </delimiters>-->
+                    <encoding>utf-8</encoding>
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
+                    <!-- 过滤后缀为pem、pfx的证书文件 , 不进行编译-->
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>pem</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>pfx</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>p12</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>cer</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>der</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>p12</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>truststore</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>comp</id>
+            <properties>
+                <env.active>comp</env.active>
+                <nacos.server.addr>192.168.145.150:8848</nacos.server.addr>
+                <nacos.namespace>comp-jiudd-find-boot</nacos.namespace>
+                <sentinel.dashboard>172.25.176.68:10004</sentinel.dashboard>
+                <sso.redis.address>10.112.0.28:6801,10.112.0.28:6802,10.112.0.16:6803,10.112.0.16:6804,10.112.0.27:6805,10.112.0.27:6806</sso.redis.address>
+                <redis.password>cCb50196$</redis.password>
+                <mysql.address>192.168.145.150:3306</mysql.address>
+                <mysql.user>root</mysql.user>
+                <mysql.password>AbHc123!</mysql.password>
+                <mysql.service.database>find-service</mysql.service.database><!--微服务使用的数据库名称-->
+                <mysql.gateway.database>find-gateway</mysql.gateway.database><!--网关使用的数据库名称-->
+                <mysql.provider1.database>find-provider1</mysql.provider1.database><!--微服务1使用的数据库名称-->
+                <mysql.provider2.database>find-provider2</mysql.provider2.database><!--微服务2使用的数据库名称-->
+                <mysql.provider3.database>find-provider3</mysql.provider3.database><!--微服务3使用的数据库名称-->
+                <gateway.actuator.routes.url>http://localhost:8080/actuator/gateway/routes</gateway.actuator.routes.url><!--从Gateway网关暴漏的端点开放api获取当前的路由信息，可获取到当前注册的所有微服务-->
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>home</id>
+            <properties>
+                <env.active>home</env.active>
+                <nacos.server.addr>192.168.195.150:8848</nacos.server.addr>
+                <nacos.namespace>home-jiudd-find-boot</nacos.namespace> <!--此项目的home环境的专用 namespace-->
+                <mysql.address>192.168.195.150:3306</mysql.address>
+                <mysql.user>root</mysql.user>
+                <mysql.password>AbHc123!</mysql.password>
+                <mysql.service.database>find-service</mysql.service.database><!--微服务使用的数据库名称-->
+                <mysql.gateway.database>find-gateway</mysql.gateway.database><!--网关使用的数据库名称-->
+                <mysql.provider1.database>find-provider1</mysql.provider1.database><!--微服务1使用的数据库名称-->
+                <mysql.provider2.database>find-provider2</mysql.provider2.database><!--微服务2使用的数据库名称-->
+                <mysql.provider3.database>find-provider3</mysql.provider3.database><!--微服务3使用的数据库名称-->
+                <gateway.actuator.routes.url>http://localhost:8080/actuator/gateway/routes</gateway.actuator.routes.url><!--从Gateway网关暴漏的端点开放api获取当前的路由信息，可获取到当前注册的所有微服务-->
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

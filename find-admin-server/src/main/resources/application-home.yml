@@ -1,0 +1,26 @@
+server:
+  port: 8769
+
+spring:
+  application:
+    name: find-admin-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.server.addr}
+        namespace: ${nacos.namespace}
+        metadata:
+          management:
+            # 这里要适配下健康检查的endpoint
+            context-path: '/actuator'
+
+
+#暴露所有监控监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
